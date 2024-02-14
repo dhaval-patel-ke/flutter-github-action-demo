@@ -56,4 +56,4 @@ jobs:
           appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: kernelequity
-          file: app-debug.apk
+          file: "*.apk"
