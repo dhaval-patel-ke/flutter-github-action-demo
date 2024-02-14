@@ -43,13 +43,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Firebase[Demo].apk
-          path: Firebase[Demo].apk
 
       - name: Display structure of downloaded files
         run: ls -R
 
       - name: Get File
-        run: echo "APK_FILE=${{ github.workspace }}/*.apk" >> $GITHUB_ENV
+        run: echo "APK_FILE=$GITHUB_WORKSPACE/Firebase[Demo].apk" >> $GITHUB_ENV
 
       - name: Upload APK artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -57,4 +56,4 @@ jobs:
           appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: kernelequity
-          file: ./Firebase[Demo].apk
+          file: ${{env.APK_FILE}}
