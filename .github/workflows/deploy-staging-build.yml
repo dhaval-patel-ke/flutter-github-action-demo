@@ -1,0 +1,59 @@
+name: Deploy Staging Build
+
+on:
+  push:
+    branches: [ 'main' ]
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Build Staging APK
+        run: flutter build apk --debug
+
+      - name: Upload Android Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: Firebase[Demo].apk
+          path: build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+          compression-level: 0 # no compression
+
+  # Required because of https://github.com/wzieba/Firebase-Distribution-Github-Action/issues/24
+  firebase-distribution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [ build-android]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Firebase[Demo].apk
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Get File
+        run: echo "APK_FILE=${{ github.workspace }}/*.apk" >> $GITHUB_ENV
+
+      - name: Upload APK artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
+          groups: kernelequity
+          file: ${{env.APK_FILE}}
