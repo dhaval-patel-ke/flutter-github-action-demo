@@ -8,6 +8,9 @@ permissions:
   actions: write
   contents: write
 
+env:
+  APK_NAME: "Firebase[Demo].apk"
+
 jobs:
   build-android:
     runs-on: ubuntu-latest
@@ -25,7 +28,7 @@ jobs:
       - name: Upload Android Release
         uses: actions/upload-artifact@v4
         with:
-          name: Firebase[Demo].apk
+          name: ${{ env.APK_NAME }}
           path: build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
           compression-level: 0 # no compression
@@ -34,21 +37,24 @@ jobs:
   firebase-distribution:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [ build-android]
+    needs: [ build-android ]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Display structure of downloaded files
+        run: ls -R
+
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
-          name: Firebase[Demo].apk
+          name: ${{ env.APK_NAME }}
 
       - name: Display structure of downloaded files
         run: ls -R
 
       - name: Get File
-        run: echo "APK_FILE=$GITHUB_WORKSPACE/Firebase[Demo].apk" >> $GITHUB_ENV
+        run: echo "APK_PATH=$GITHUB_WORKSPACE/${{ env.APK_NAME }}" >> $GITHUB_ENV
 
       - name: Upload APK artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -56,4 +62,4 @@ jobs:
           appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: kernelequity
-          file: ${{env.APK_FILE}}
+          file: ${{env.APK_PATH}}
