@@ -57,4 +57,4 @@ jobs:
           appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: kernelequity
-          file: Firebase[Demo].apk
+          file: ./Firebase[Demo].apk
