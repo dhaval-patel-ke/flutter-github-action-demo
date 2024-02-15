@@ -26,7 +26,7 @@ jobs:
         run: flutter build apk --debug
 
       - name: Rename APK File
-        run: mv *.apk ${{ env.APK_NAME }}
+        run: mv "build/app/outputs/flutter-apk/*.apk" "build/app/outputs/flutter-apk/${{ env.APK_NAME }}"
 
       - name: Upload Android Release
         uses: actions/upload-artifact@v4
