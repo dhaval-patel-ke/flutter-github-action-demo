@@ -25,6 +25,9 @@ jobs:
       - name: Build Staging APK
         run: flutter build apk --debug
 
+      - name: Rename APK File
+        run: cp *.apk ${{ env.APK_NAME }}
+
       - name: Upload Android Release
         uses: actions/upload-artifact@v4
         with:
