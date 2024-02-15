@@ -26,13 +26,14 @@ jobs:
         run: flutter build apk --debug
 
       - name: Rename APK File
-        run: mv "build/app/outputs/flutter-apk/*.apk" "build/app/outputs/flutter-apk/${{ env.APK_NAME }}"
+        #run: mv build/app/outputs/flutter-apk/*.apk Firebase-Demo.apk
+        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
 
       - name: Upload Android Release
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: build/app/outputs/flutter-apk/*.apk
+          path: ${{ env.APK_NAME }}
           if-no-files-found: error
           compression-level: 0 # no compression
 
