@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 env:
-  APK_NAME: "Firebase[Demo].apk"
+  APK_NAME: "Firebase-Demo.apk"
 
 jobs:
   build-android:
