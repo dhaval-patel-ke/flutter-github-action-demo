@@ -38,29 +38,29 @@ jobs:
           compression-level: 0 # no compression
 
   # Required because of https://github.com/wzieba/Firebase-Distribution-Github-Action/issues/24
-  firebase-distribution:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [ build-android ]
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Download APK artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.APK_NAME }}
-
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Upload APK artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
-          groups: kernelequity
-          file: ${{ env.APK_NAME }}
+#  firebase-distribution:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    needs: [ build-android ]
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Display structure of downloaded files
+#        run: ls -R
+#
+#      - name: Download APK artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: ${{ env.APK_NAME }}
+#
+#      - name: Display structure of downloaded files
+#        run: ls -R
+#
+#      - name: Upload APK artifact to Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+#          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
+#          groups: kernelequity
+#          file: ${{ env.APK_NAME }}
