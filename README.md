@@ -1,2 +1,2 @@
 # flutter-github-action-demo
-flutter github action demo app
+flutter github action demo
