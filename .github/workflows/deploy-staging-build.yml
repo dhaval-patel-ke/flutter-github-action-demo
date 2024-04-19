@@ -37,7 +37,32 @@ jobs:
           compression-level: 0 # no compression
 
   # Required because of https://github.com/wzieba/Firebase-Distribution-Github-Action/issues/24
-  firebase-distribution:
+#  firebase-distribution:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    needs: [ build-android ]
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Display structure of downloaded files
+#        run: ls -R
+#
+#      - name: Download APK artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: ${{ env.APK_NAME }}
+#
+#      - name: Upload APK artifact to Firebase App Distribution
+#        id: firebase-deploy-android
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+#          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
+#          groups: kernelequity
+#          file: ${{ env.APK_NAME }}
+
+  create-tag:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [ build-android ]
@@ -45,36 +70,8 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Download APK artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.APK_NAME }}
-
-      - name: Upload APK artifact to Firebase App Distribution
-        id: firebase-deploy-android
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
-          groups: kernelequity
-          file: ${{ env.APK_NAME }}
-
-      - name: Print Output
-        run: echo ${{ steps.firebase-deploy-android.TESTING_URI }}
-
-  create-tag:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [firebase-distribution]
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Set tag version
-        run: echo "VERSION_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      #- name: Set tag version
+      #  run: echo "VERSION_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Retrieve version name
         shell: bash
@@ -105,7 +102,8 @@ jobs:
               ref: 'refs/tags/${{env.VERSION_NAME}}',
               sha: context.sha
             })
-            console.log(result)
+            const obj = JSON.parse(result)
+            console.log(obj.data.url)
 
 #      - name: Create Release
 #        uses: actions/github-script@v7
