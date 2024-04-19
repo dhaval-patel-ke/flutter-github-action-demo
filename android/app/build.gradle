@@ -60,6 +60,15 @@ android {
     }
 }
 
+// ./gradlew -q androidVersionName -PflavorName=production
+tasks.register("androidVersionName") {
+    android.productFlavors.configureEach { flavor ->
+        if (flavorName.matches(flavor.name)) {
+            println flavor.versionName
+        }
+    }
+}
+
 flutter {
     source '../..'
 }
