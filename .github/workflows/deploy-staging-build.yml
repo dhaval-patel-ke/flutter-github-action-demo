@@ -25,7 +25,14 @@ jobs:
       - name: Build Staging APK
         run: flutter build apk --debug --flavor staging
 
-#      - name: Rename APK File
+      - name: Retrieve version name
+        shell: bash
+        run: |
+          cd android
+          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_ENV
+          cd ..
+
+  #      - name: Rename APK File
 #        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
 #
 #      - name: Upload Android Release
