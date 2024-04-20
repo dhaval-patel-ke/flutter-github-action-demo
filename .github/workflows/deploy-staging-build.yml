@@ -75,11 +75,11 @@ jobs:
             const result = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/${{env.VERSION_NAME}}',
+              ref: 'refs/tags/v${{env.VERSION_NAME}}',
               sha: context.sha
             })
             const obj = JSON.parse(result)
-            console.log(obj.data.url)
+            console.log(obj)
 
 #      - name: Create Release
 #        uses: actions/github-script@v7
