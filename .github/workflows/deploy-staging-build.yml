@@ -125,9 +125,9 @@ jobs:
           VERSION_NAME: "1.1.1"#"${{ needs.build-android.outputs.android-version }}
           RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
         run: |
-          echo "*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*\n" >> release-note.txt
-          echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n\n" >> release-note.txt
-          echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n\n" >> release-note.txt
+          echo "*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> release-note.txt
+          echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n" >> release-note.txt
+          echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> release-note.txt
           echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> release-note.txt
 
       - uses: actions/upload-artifact@v4
