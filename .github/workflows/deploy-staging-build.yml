@@ -48,12 +48,11 @@ jobs:
       - name: Retrieve version name
         shell: bash
         run: |
-          echo "RELEASE_NAME=$(git log -1 --format=%s)" >> $GITHUB_ENV
           cd android
           echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_ENV
           cd ..
 
-      - name: Retrieve version name
+      - name: Retrieve release note
         shell: bash
         run: |
           {
