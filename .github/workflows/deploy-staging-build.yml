@@ -72,8 +72,16 @@ jobs:
         id: release-note
         shell: bash
         run: |
-          echo "GIT_COMMIT_SUMMARY=$(git log -1 --format=%s)"
-          echo "GIT_COMMIT_DESCRIPTION=$(git log -1 --format=%b)"
+          {
+              echo 'GIT_COMMIT_SUMMARY<<EOF'
+              git log -1 --format=%s
+              echo EOF
+          }
+          {
+              echo 'GIT_COMMIT_DESCRIPTION<<EOF'
+              git log -1 --format=%b
+              echo EOF
+          }
           echo "$GIT_COMMIT_SUMMARY" >> release-note-1.txt
           echo "$GIT_COMMIT_DESCRIPTION" >> release-note-2.txt
           {
