@@ -71,8 +71,23 @@ jobs:
       - name: Retrieve release note
         id: release-note
         shell: bash
-        run: |
-           echo "RELEASE_NOTE=Test" >> $GITHUB_OUTPUT
+        run: |               
+          {
+            echo 'RELEASE_NOTE_TEMP<<EOF'
+            git log -1 --format=%b
+            echo EOF
+          }
+          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
+          if [ -z "${GIT_MESSAGE}" ]
+          then
+            {
+              echo 'RELEASE_NOTE_TEMP<<EOF'
+              git log -1 --format=%s
+              echo EOF
+            }
+          fi
+          echo "RELEASE_NOTE=$GIT_MESSAGE" >> $GITHUB_OUTPUT
+          echo "GIT_MESSAGE=$GIT_MESSAGE" >> $GITHUB_ENV
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
