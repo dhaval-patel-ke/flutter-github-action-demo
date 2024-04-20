@@ -80,7 +80,7 @@ jobs:
               echo 'RELEASE_NOTE<<EOF'
               $GIT_COMMIT_DESCRIPTION
               echo EOF
-          } >> "$GITHUB_OUTPUT"
+          } >> release-note-3.txt
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
