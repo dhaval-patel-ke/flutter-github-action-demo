@@ -135,9 +135,9 @@ jobs:
           name: release-note.txt
           path: release-note.txt
 
-      - name: Read README.md
+      - name: Read file content
         id: content
-        uses: jaywcjlove/github-action-read-file@main
+        uses: guibranco/github-file-reader-action-v2@latest
         with:
           path: release-note.txt
 
