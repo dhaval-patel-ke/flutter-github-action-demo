@@ -132,10 +132,11 @@ jobs:
           VERSION_NAME: "1.1.1"#"${{ needs.build-android.outputs.android-version }}
           RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
         run: |
+          GIT_MESSAGE=$(echo "${{ env.RELEASE_NOTE }}" | sed 's/\\n/<br>/g')
           echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
           echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
           echo "MESSAGE_LINE_3=*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}" >> $GITHUB_ENV
-          echo "MESSAGE_LINE_4=*Release Note:*\n ${{ env.RELEASE_NOTE }}" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_4=*Release Note:*\n ${{ $GIT_MESSAGE }}" >> $GITHUB_ENV
 
       - name: Notify release on google chat
         run: |
