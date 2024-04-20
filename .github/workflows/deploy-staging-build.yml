@@ -51,19 +51,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [ build-android ]
+    outputs:
+      RELEASE-NOTE: ${{ steps.release-note.outputs.RELEASE_NOTE }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Retrieve release note
         shell: bash
+        id: release-note
         run: |
           {
-              echo 'RELEASE_BODY_TEMP<<EOF'
+              echo 'RELEASE_NOTE_TEMP<<EOF'
               git log -1 --format=%b
               echo EOF
           }
-          RELEASE_BODY=$(echo "$RELEASE_BODY_TEMP" | sed 's/\\n/<br>/g') >> "$GITHUB_ENV"
+          RELEASE_NOTE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> "$GITHUB_ENV"
 
       - name: Create tag
         uses: actions/github-script@v7
@@ -107,12 +110,15 @@ jobs:
 
       - name: Retrieve version name
         shell: bash
+        env:
+          VERSION_NAME: ${{ needs.build-android.outputs.android-version }}
+          RELEASE_NOTE: ${{ needs.release-note.outputs.release-note }}
         run: |
-          echo "MESSAGE_LINE_1=DazzleMe App - Staging 🚀🚀🚀" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_1=*DazzleMe App - Staging* 🚀🚀🚀" >> $GITHUB_ENV
           echo "MESSAGE_LINE_2=${{ env.VERSION_NAME }} for Android is ready to test." >> $GITHUB_ENV
           echo "MESSAGE_LINE_3=App Build: https://appdistribution.firebase.google.com/testerapps/1:470852662413:android:51620a648793ffb67e9ec4" >> $GITHUB_ENV
           echo "MESSAGE_LINE_4=GitHub Tag: ${{ github.server_url }}/${{ github.repository }}/tags" >> $GITHUB_ENV
-          echo "MESSAGE_LINE_5=Release Note: ${{ env.RELEASE_BODY }}" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_5=Release Note: ${{ env.RELEASE_NOTE }}" >> $GITHUB_ENV
 
       - name: Notify release on google chat
         run: |
