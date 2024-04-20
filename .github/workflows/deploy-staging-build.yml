@@ -72,25 +72,6 @@ jobs:
         id: release-note
         shell: bash
         run: |
-#          {
-#            echo 'RELEASE_NOTE_TEMP<<EOF'
-#            git log -1 --format=%b
-#            echo EOF
-#          }
-#          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
-#          if [ -z "${GIT_MESSAGE}" ]
-#          then
-#            {
-#              echo 'RELEASE_NOTE_TEMP<<EOF'
-#              git log -1 --format=%s
-#              echo EOF
-#            }
-#          fi
-#          GIT_MESSAGE=Test
-#          RELEASE_NOTE=$GIT_MESSAGE >> $GITHUB_OUTPUT
-#          echo "GIT_MESSAGE=$GIT_MESSAGE" >> $GITHUB_ENV
-#          echo $GIT_MESSAGE >> release-note-1.text
-#          echo $RELEASE_NOTE >> release-note-2.text
            echo "RELEASE_NOTE=Test" >> $GITHUB_OUTPUT
 
       - name: Upload Release note
