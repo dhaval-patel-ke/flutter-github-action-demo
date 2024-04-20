@@ -19,9 +19,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup Environment
-        uses: ./.github/actions/setup-environment
-
+#      - name: Setup Environment
+#        uses: ./.github/actions/setup-environment
+#
 #      - name: Build Staging APK
 #        run: flutter build apk --debug --flavor staging
 #
