@@ -76,19 +76,16 @@ jobs:
               echo 'GIT_COMMIT_SUMMARY<<EOF'
               git log -1 --format=%s
               echo EOF
-          }
+          } >> "$GITHUB_ENV"
+          
           {
               echo 'GIT_COMMIT_DESCRIPTION<<EOF'
               git log -1 --format=%b
               echo EOF
-          }
-          echo "$GIT_COMMIT_SUMMARY" >> release-note-1.txt
-          echo "$GIT_COMMIT_DESCRIPTION" >> release-note-2.txt
-          {
-              echo 'RELEASE_NOTE<<EOF'
-              $GIT_COMMIT_DESCRIPTION
-              echo EOF
-          } >> release-note-3.txt
+          } >> "$GITHUB_ENV"
+          
+          echo "${{ env.GIT_COMMIT_SUMMARY }}" >> release-note-1.txt
+          echo "${{ env.GIT_COMMIT_DESCRIPTION }}" >> release-note-2.txt
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
