@@ -63,7 +63,7 @@ jobs:
     timeout-minutes: 30
     #needs: [ build-android ]
     outputs:
-      release-note: ${{ steps.release-note.outputs.RELEASE_NOTE }}
+      release-note: ${{ steps.release-note.outputs.GIT_COMMIT_SUMMARY }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -76,7 +76,7 @@ jobs:
               echo 'GIT_COMMIT_SUMMARY<<EOF'
               git log -1 --format=%s
               echo EOF
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_OUTPUT"
           
           {
               echo 'GIT_COMMIT_DESCRIPTION<<EOF'
@@ -125,25 +125,26 @@ jobs:
   #            })
   #
 
-#  notify-release:
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 30
-#    needs: [ build-android, create-tag ]
-#    steps:
-#      - name: Checkout Repo
-#        uses: actions/checkout@v4
-#
-#      - name: Retrieve version name
-#        shell: bash
-#        env:
-#          VERSION_NAME: ${{ needs.build-android.outputs.android-version }}
-#          RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
-#        run: |
-#          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
-#          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
-#          echo "MESSAGE_LINE_3=*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}" >> $GITHUB_ENV
-#          echo "MESSAGE_LINE_4=*Release Note:*\n ${{ env.RELEASE_NOTE }}" >> $GITHUB_ENV
-#
-#      - name: Notify release on google chat
-#        run: |
-#          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ env.MESSAGE_LINE_1 }} \n${{ env.MESSAGE_LINE_2 }} \n\n${{ env.MESSAGE_LINE_3 }} \n\n${{ env.MESSAGE_LINE_4 }}" }'
+  notify-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    #needs: [ build-android, create-tag ]
+    needs: [ create-tag ]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Retrieve version name
+        shell: bash
+        env:
+          VERSION_NAME: "1.1.1"#"${{ needs.build-android.outputs.android-version }}
+          RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
+        run: |
+          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_3=*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_4=*Release Note:*\n ${{ env.RELEASE_NOTE }}" >> $GITHUB_ENV
+
+      - name: Notify release on google chat
+        run: |
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ env.MESSAGE_LINE_1 }} \n${{ env.MESSAGE_LINE_2 }} \n\n${{ env.MESSAGE_LINE_3 }} \n\n${{ env.MESSAGE_LINE_4 }}" }'
