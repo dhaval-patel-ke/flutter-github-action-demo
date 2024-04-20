@@ -133,12 +133,12 @@ jobs:
           RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
         run: |
           {
-              echo GIT_COMMIT_SUMMARY<<EOF
+              echo 'MESSAGE<<EOF'
               '*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*'
               '*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!'
               '*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}'
               '*Release Note:*\n ${{ env.RELEASE_NOTE }}'
-              EOF
+              echo EOF
           } >> "$GITHUB_ENV"
 #          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
 #          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
