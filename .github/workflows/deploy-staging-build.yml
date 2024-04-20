@@ -88,7 +88,7 @@ jobs:
           fi
           GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
           RELEASE_NOTE=$GIT_MESSAGE >> $GITHUB_OUTPUT
-          echo "GIT_MESSAGE=$GIT_MESSAGE" >> $GITHUB_ENV
+          echo "GIT_MESSAGE=test" >> $GITHUB_ENV
           echo $GIT_MESSAGE >> release-note-1.text
           echo $RELEASE_NOTE >> release-note-2.text
 
