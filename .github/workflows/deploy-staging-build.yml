@@ -63,7 +63,7 @@ jobs:
     timeout-minutes: 30
     needs: [ build-android ]
     outputs:
-      release-note: ${{ steps.release-note.outputs.GIT_MESSAGE }}
+      release-note: ${{ steps.release-note.outputs.RELEASE_NOTE }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -77,16 +77,16 @@ jobs:
             git log -1 --format=%b
             echo EOF
           }
-          echo $RELEASE_NOTE_TEMP >> release-note-0.text
           GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
-          echo $GIT_MESSAGE >> release-note-1.text
           if [ -z "${GIT_MESSAGE}" ]
           then
             RELEASE_NOTE_TEMP=$(git log -1 --format=%s)
           fi
-          echo $RELEASE_NOTE_TEMP >> release-note-2.text
           GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
-          echo $GIT_MESSAGE >> release-note-3.text
+          RELEASE_NOTE=$GIT_MESSAGE >> $GITHUB_OUTPUT
+          GIT_MESSAGE >> $GITHUB_ENV
+          echo $GIT_MESSAGE >> release-note-1.text
+          echo $RELEASE_NOTE >> release-note-2.text
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
