@@ -130,7 +130,13 @@ jobs:
           echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> release-note.txt
           echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> release-note.txt
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-note.txt
+          path: release-note.txt
+
+
       - name: Notify release on google chat
         run: |
-          MESSAGE=$(cat release-note.txt)
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": $MESSAGE }'
+          message="$(cat release-note.txt)"
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": \"$message\" }'
