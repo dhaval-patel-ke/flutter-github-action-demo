@@ -13,6 +13,7 @@ env:
   ANDROID_APP_NAME: "DazzleMe App - Staging"
   ACTIONS_STEP_DEBUG: true
   ANDROID_APP_BUILD_LINK: "https://appdistribution.firebase.google.com/testerapps/1:470852662413:android:51620a648793ffb67e9ec4"
+  RELEASE_NOTE_NAME: "release-note.txt"
 
 jobs:
   build-android:
@@ -115,21 +116,21 @@ jobs:
           VERSION_NAME: ${{ needs.build-android.outputs.android-version }}
           RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
         run: |
-          echo "*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> release-note.txt
-          echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n" >> release-note.txt
-          echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> release-note.txt
-          echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> release-note.txt
+          echo "*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> ${{ env.RELEASE_NOTE_NAME }}
+          echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_NAME }}
+          echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> ${{ env.RELEASE_NOTE_NAME }}
+          echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> ${{ env.RELEASE_NOTE_NAME }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: release-note.txt
-          path: release-note.txt
+          name: ${{ env.RELEASE_NOTE_NAME }}
+          path: ${{ env.RELEASE_NOTE_NAME }}
 
       - name: Read file content
         id: content
         uses: guibranco/github-file-reader-action-v2@latest
         with:
-          path: release-note.txt
+          path: ${{ env.RELEASE_NOTE_NAME }}
 
       - name: Notify release on google chat
         run: |
