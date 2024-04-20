@@ -77,11 +77,8 @@ jobs:
               git log -1 --format=%b
               echo EOF
           }
-          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> "$GITHUB_OUTPUT"
-          echo "$GIT_MESSAGE"
-          echo "$GITHUB_OUTPUT"
-          echo "RELEASE_NOTE=$GIT_MESSAGE" >> $GITHUB_ENV
-          echo "$GITHUB_ENV"
+          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> $GITHUB_OUTPUT
+          RELEASE_NOTE=$(echo $GIT_MESSAGE) >> $GITHUB_ENV
 
   #      - name: Create tag
 #        uses: actions/github-script@v7
