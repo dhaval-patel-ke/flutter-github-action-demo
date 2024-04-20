@@ -24,8 +24,8 @@ android {
 
     defaultConfig {
         // minSdkVersion flutter.minSdkVersion
-        minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
+        minSdk 21
+        targetSdk flutter.targetSdkVersion
     }
 
     buildTypes {
