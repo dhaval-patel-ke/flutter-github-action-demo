@@ -15,14 +15,14 @@ env:
   ANDROID_APP_BUILD_LINK: "https://appdistribution.firebase.google.com/testerapps/1:470852662413:android:51620a648793ffb67e9ec4"
 
 jobs:
-  build-android:
-    runs-on: macos-latest
-    timeout-minutes: 30
-    outputs:
-      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+#  build-android:
+#    runs-on: macos-latest
+#    timeout-minutes: 30
+#    outputs:
+#      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
 
 #      - name: Setup Environment
 #        uses: ./.github/actions/setup-environment
@@ -38,13 +38,13 @@ jobs:
 #          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
 #          cd ..
 
-      - name: Retrieve version name
-        id: android-version
-        shell: bash
-        run: |
-          cd android
-          echo "VERSION_NAME=1.0.1" >> $GITHUB_OUTPUT
-          cd ..
+#      - name: Retrieve version name
+#        id: android-version
+#        shell: bash
+#        run: |
+#          cd android
+#          echo "VERSION_NAME=1.0.1" >> $GITHUB_OUTPUT
+#          cd ..
 
   #      - name: Rename APK File
   #        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
@@ -120,25 +120,25 @@ jobs:
   #            })
   #
 
-  notify-release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [ build-android, create-tag ]
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Retrieve version name
-        shell: bash
-        env:
-          VERSION_NAME: ${{ needs.build-android.outputs.android-version }}
-          RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
-        run: |
-          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
-          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
-          echo "MESSAGE_LINE_3=*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}" >> $GITHUB_ENV
-          echo "MESSAGE_LINE_4=*Release Note:*\n ${{ env.RELEASE_NOTE }}" >> $GITHUB_ENV
-
-      - name: Notify release on google chat
-        run: |
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ env.MESSAGE_LINE_1 }} \n${{ env.MESSAGE_LINE_2 }} \n\n${{ env.MESSAGE_LINE_3 }} \n\n${{ env.MESSAGE_LINE_4 }}" }'
+#  notify-release:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    needs: [ build-android, create-tag ]
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Retrieve version name
+#        shell: bash
+#        env:
+#          VERSION_NAME: ${{ needs.build-android.outputs.android-version }}
+#          RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
+#        run: |
+#          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
+#          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
+#          echo "MESSAGE_LINE_3=*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}" >> $GITHUB_ENV
+#          echo "MESSAGE_LINE_4=*Release Note:*\n ${{ env.RELEASE_NOTE }}" >> $GITHUB_ENV
+#
+#      - name: Notify release on google chat
+#        run: |
+#          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ env.MESSAGE_LINE_1 }} \n${{ env.MESSAGE_LINE_2 }} \n\n${{ env.MESSAGE_LINE_3 }} \n\n${{ env.MESSAGE_LINE_4 }}" }'
