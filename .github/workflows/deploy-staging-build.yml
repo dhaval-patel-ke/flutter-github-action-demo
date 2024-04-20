@@ -84,8 +84,8 @@ jobs:
               echo EOF
           } >> "$GITHUB_ENV"
           
-          echo "${{ env.GIT_COMMIT_SUMMARY }}" >> release-note-1.txt
-          echo "${{ env.GIT_COMMIT_DESCRIPTION }}" >> release-note-2.txt
+          echo "$(echo -n "$GIT_COMMIT_SUMMARY" | base64)" >> release-note-1.txt
+          echo "$(echo -n "${{ env.GIT_COMMIT_DESCRIPTION }}" | base64)" >> release-note-1.txt
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
