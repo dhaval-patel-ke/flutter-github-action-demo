@@ -125,20 +125,23 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Retrieve version name
+      - name: Generate message
         shell: bash
         env:
           VERSION_NAME: "1.1.1"#"${{ needs.build-android.outputs.android-version }}
           RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
         run: |
+          MULTI_LINES_MESSAGE = "*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*\n"
+            "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n"
+            "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n"
+            "*Release Note:*\n ${{ env.RELEASE_NOTE }}\n"
+
           {
               echo 'MESSAGE<<EOF'
-              *${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*
-              *v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!
-              *GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}
-              *Release Note:*\n ${{ env.RELEASE_NOTE }}
+              $MULTI_LINES_MESSAGE
               echo EOF
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_ENV"        
+
 #          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
 #          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
 #          echo "MESSAGE_LINE_3=*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}" >> $GITHUB_ENV
