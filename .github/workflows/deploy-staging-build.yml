@@ -22,45 +22,20 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
 
-      - name: Build Staging APK
-        run: flutter build apk --debug
-
-      - name: Rename APK File
-        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
-
-      - name: Upload Android Release
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.APK_NAME }}
-          path: ${{ env.APK_NAME }}
-          if-no-files-found: error
-          compression-level: 0 # no compression
-
-  # Required because of https://github.com/wzieba/Firebase-Distribution-Github-Action/issues/24
-#  firebase-distribution:
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 30
-#    needs: [ build-android ]
-#    steps:
-#      - name: Checkout Repo
-#        uses: actions/checkout@v4
+#      - name: Build Staging APK
+#        run: flutter build apk --debug --flavor staging
 #
-#      - name: Display structure of downloaded files
-#        run: ls -R
+#      - name: Rename APK File
+#        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
 #
-#      - name: Download APK artifact
-#        uses: actions/download-artifact@v4
+#      - name: Upload Android Release
+#        uses: actions/upload-artifact@v4
 #        with:
 #          name: ${{ env.APK_NAME }}
-#
-#      - name: Upload APK artifact to Firebase App Distribution
-#        id: firebase-deploy-android
-#        uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        with:
-#          appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-#          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
-#          groups: kernelequity
-#          file: ${{ env.APK_NAME }}
+#          path: ${{ env.APK_NAME }}
+#          if-no-files-found: error
+#          compression-level: 0 # no compression
+
 
   create-tag:
     runs-on: ubuntu-latest
@@ -70,15 +45,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      #- name: Set tag version
-      #  run: echo "VERSION_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
       - name: Retrieve version name
         shell: bash
         run: |
           echo "RELEASE_NAME=$(git log -1 --format=%s)" >> $GITHUB_ENV
           cd android
-          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=production)" >> $GITHUB_ENV
+          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_ENV
           cd ..
 
       - name: Retrieve version name
@@ -121,3 +93,24 @@ jobs:
 #              prerelease: false,
 #            })
 #
+
+  notify-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [ create-tag ]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Retrieve version name
+        shell: bash
+        run: |
+          echo "MESSAGE_LINE_1=DazzleMe App - Staging 🚀🚀🚀" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_2=${{ env.VERSION_NAME }} for Android is ready to test." >> $GITHUB_ENV
+          echo "MESSAGE_LINE_3=App Build: https://appdistribution.firebase.google.com/testerapps/1:470852662413:android:51620a648793ffb67e9ec4" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_4=GitHub Tag: ${{ github.server_url }}/${{ github.repository }}/tags" >> $GITHUB_ENV
+          echo "MESSAGE_LINE_5=Release Note: ${{ env.RELEASE_BODY }}" >> $GITHUB_ENV
+
+      - name: Notify release on google chat
+        run: |
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "* ${{ env.MESSAGE_LINE_1 }}*\n${{ env.MESSAGE_LINE_2 }} \n${{ env.MESSAGE_LINE_3 }} \n${{ env.MESSAGE_LINE_4 }} \n${{ env.MESSAGE_LINE_5 }}" }'
