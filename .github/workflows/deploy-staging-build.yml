@@ -78,13 +78,7 @@ jobs:
               echo EOF
           } >> "$GITHUB_OUTPUT"
 
-      - name: Upload Release note
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-note
-          path: '*.txt'
-
-  #      - name: Create tag
+#      - name: Create tag
 #        uses: actions/github-script@v7
 #        id: create-tag
 #        env:
@@ -136,9 +130,11 @@ jobs:
             "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n"
             "*Release Note:*\n ${{ env.RELEASE_NOTE }}\n"
 
-          echo "MESSAGE<<EOF" >> $GITHUB_ENV
-          echo $MULTI_LINES_MESSAGE >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          {
+              echo 'MESSAGE<<EOF'
+              "$MULTI_LINES_MESSAGE"
+              echo EOF
+          } >> "$GITHUB_ENV"
 
 #          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
 #          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
