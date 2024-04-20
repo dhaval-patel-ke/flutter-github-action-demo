@@ -71,31 +71,17 @@ jobs:
       - name: Retrieve release note
         id: release-note
         shell: bash
-        run: |               
-          {
-            echo 'RELEASE_NOTE_TEMP<<EOF'
-            git log -1 --format=%b
-            echo EOF
-          } 
-          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
-          if [ -z "${GIT_MESSAGE}" ]
-          then
-            {
-              echo 'RELEASE_NOTE_TEMP<<EOF'
-              git log -1 --format=%s
-              echo EOF
-            }
-          fi
-          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
-          echo "RELEASE_NOTE=$GIT_MESSAGE" >> "$GITHUB_OUTPUT"
-          echo "GIT_MESSAGE=$GIT_MESSAGE" >> "$GITHUB_ENV"
-          echo "GIT_MESSAGE=$GIT_MESSAGE" >> "$GITHUB_ENV"
+        run: |
+          echo "GIT_COMMIT_SUMMARY=$(git log -1 --format=%s)"
+          echo "GIT_COMMIT_DESCRIPTION=$(git log -1 --format=%b)"
+          echo "$GIT_COMMIT_SUMMARY" >> "release-note-1.txt
+          echo "$GIT_COMMIT_DESCRIPTION" >> "release-note-2.txt
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
         with:
           name: release-note
-          path: '*.text'
+          path: '*.txt'
 
   #      - name: Create tag
 #        uses: actions/github-script@v7
