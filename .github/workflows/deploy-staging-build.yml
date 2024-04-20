@@ -22,8 +22,8 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
 
-      - name: Build Staging APK
-        run: flutter build apk --debug --flavor staging
+#      - name: Build Staging APK
+#        run: flutter build apk --debug --flavor staging
 
 #      - name: Rename APK File
 #        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
