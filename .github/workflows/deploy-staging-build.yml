@@ -133,4 +133,4 @@ jobs:
       - name: Notify release on google chat
         run: |
           MESSAGE=$(cat release-note.txt)
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ MESSAGE }}" }'
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "$MESSAGE" }'
