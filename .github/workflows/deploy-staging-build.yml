@@ -63,7 +63,7 @@ jobs:
     timeout-minutes: 30
     #needs: [ build-android ]
     outputs:
-      release-note: ${{ steps.release-note.outputs.GIT_COMMIT_SUMMARY }}
+      release-note: ${{ steps.release-note.outputs.GIT_COMMIT_MESSAGE }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -73,11 +73,10 @@ jobs:
         shell: bash
         run: |
           {
-              echo 'GIT_COMMIT_SUMMARY<<EOF'
+              echo 'GIT_COMMIT_MESSAGE<<EOF'
               git log -1 --format=%B
               echo EOF
           } >> "$GITHUB_OUTPUT"
-          echo "$(echo -n "$GIT_COMMIT_SUMMARY" | base64)" >> release-note-1.txt
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
@@ -134,10 +133,10 @@ jobs:
         run: |
           {
               echo 'MESSAGE<<EOF'
-              '*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*'
-              '*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!'
-              '*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}'
-              '*Release Note:*\n ${{ env.RELEASE_NOTE }}'
+              *${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*
+              *v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!
+              *GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}
+              *Release Note:*\n ${{ env.RELEASE_NOTE }}
               echo EOF
           } >> "$GITHUB_ENV"
 #          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
