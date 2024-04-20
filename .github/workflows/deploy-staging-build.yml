@@ -52,13 +52,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Retrieve version name
-        shell: bash
-        run: |
-          cd android
-          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_ENV
-          cd ..
-
       - name: Retrieve release note
         shell: bash
         run: |
