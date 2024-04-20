@@ -69,7 +69,7 @@ jobs:
               echo EOF
           }
           RELEASE_NOTE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> $GITHUB_ENV
-          $RELEASE_NOTE >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTE" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         uses: actions/github-script@v7
