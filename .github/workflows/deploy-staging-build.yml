@@ -76,7 +76,7 @@ jobs:
               git log -1 --format=%b
               echo EOF
           }
-          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> $GITHUB_OUTPUT
+          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> "$GITHUB_OUTPUT"
           echo "$GIT_MESSAGE"
           echo "$GITHUB_OUTPUT"
           echo "RELEASE_NOTE=$GIT_MESSAGE" >> $GITHUB_ENV
@@ -117,7 +117,7 @@ jobs:
   notify-release:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [ build-android , create-tag ]
+    needs: [ build-android, create-tag ]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
