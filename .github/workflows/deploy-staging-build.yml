@@ -135,10 +135,10 @@ jobs:
             "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n"
             "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n"
             "*Release Note:*\n ${{ env.RELEASE_NOTE }}\n"
-
+         
           {
               echo 'MESSAGE<<EOF'
-              $MULTI_LINES_MESSAGE
+              echo $MULTI_LINES_MESSAGE
               echo EOF
           } >> "$GITHUB_ENV"        
 
