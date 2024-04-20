@@ -111,8 +111,8 @@ jobs:
       - name: Retrieve version name
         shell: bash
         env:
-          VERSION_NAME: ${{ needs.build-android.outputs.android-version }}
-          RELEASE_NOTE: ${{ needs.release-note.outputs.release-note }}
+          VERSION_NAME: ${{ jobs.build-android.outputs.android-version }}
+          RELEASE_NOTE: ${{ jobs.release-note.outputs.release-note }}
         run: |
           echo "MESSAGE_LINE_1=*DazzleMe App - Staging* 🚀🚀🚀" >> $GITHUB_ENV
           echo "MESSAGE_LINE_2=${{ env.VERSION_NAME }} for Android is ready to test." >> $GITHUB_ENV
