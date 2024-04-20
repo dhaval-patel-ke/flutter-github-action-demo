@@ -78,6 +78,12 @@ jobs:
               echo EOF
           }
           GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> $GITHUB_OUTPUT
+          if [ -z "${GIT_MESSAGE}" ]
+          then
+            echo 123
+            RELEASE_NOTE_TEMP=$(git log -1 --format=%s)
+          fi
+          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> $GITHUB_OUTPUT
           RELEASE_NOTE=$(echo $GIT_MESSAGE) >> $GITHUB_ENV
 
   #      - name: Create tag
