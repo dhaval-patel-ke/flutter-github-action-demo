@@ -89,6 +89,7 @@ jobs:
           GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
           echo "RELEASE_NOTE=$GIT_MESSAGE" >> "$GITHUB_OUTPUT"
           echo "GIT_MESSAGE=$GIT_MESSAGE" >> "$GITHUB_ENV"
+          echo "GIT_MESSAGE=$GIT_MESSAGE" >> "$GITHUB_ENV"
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
