@@ -61,7 +61,7 @@ jobs:
   create-tag:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [ build-android ]
+    #needs: [ build-android ]
     outputs:
       release-note: ${{ steps.release-note.outputs.RELEASE_NOTE }}
     steps:
