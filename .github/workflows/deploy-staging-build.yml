@@ -125,13 +125,19 @@ jobs:
           VERSION_NAME: "1.1.1"#"${{ needs.build-android.outputs.android-version }}
           RELEASE_NOTE: ${{ needs.create-tag.outputs.release-note }}
         run: |
-          echo "MESSAGE=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*\n*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n*Release Note:*\n ${{ env.RELEASE_NOTE }}\n" >> "$GITHUB_ENV"
+          echo "*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*\n >> release-note.txt
+          echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!\n >> release-note.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-note.txt
+          path: '*.txt'
 
 #          echo "MESSAGE_LINE_1=*${{ env.ANDROID_APP_NAME }} 🚀🚀🚀*" >> $GITHUB_ENV
 #          echo "MESSAGE_LINE_2=*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.ANDROID_APP_BUILD_LINK }}|Click Here>* to download!" >> $GITHUB_ENV
 #          echo "MESSAGE_LINE_3=*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}" >> $GITHUB_ENV
 #          echo "MESSAGE_LINE_4=*Release Note:*\n ${{ env.RELEASE_NOTE }}" >> $GITHUB_ENV
 
-      - name: Notify release on google chat
-        run: |
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ env.MESSAGE }}" }'
+#      - name: Notify release on google chat
+#        run: |
+#          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ env.MESSAGE }}" }'
