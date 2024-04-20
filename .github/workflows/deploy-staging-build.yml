@@ -80,7 +80,11 @@ jobs:
           GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
           if [ -z "${GIT_MESSAGE}" ]
           then
-            RELEASE_NOTE_TEMP=$(git log -1 --format=%s)
+            {
+              echo 'RELEASE_NOTE_TEMP<<EOF'
+              git log -1 --format=%s
+              echo EOF
+            }
           fi
           GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
           RELEASE_NOTE=$GIT_MESSAGE >> $GITHUB_OUTPUT
