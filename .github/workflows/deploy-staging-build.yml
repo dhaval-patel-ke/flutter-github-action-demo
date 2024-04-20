@@ -73,17 +73,20 @@ jobs:
         shell: bash
         run: |
           {
-              echo 'RELEASE_NOTE_TEMP<<EOF'
-              git log -1 --format=%b
-              echo EOF
+            echo 'RELEASE_NOTE_TEMP<<EOF'
+            git log -1 --format=%b
+            echo EOF
           }
-          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> release-note-0.text
+          echo $RELEASE_NOTE_TEMP >> release-note-0.text
+          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
+          echo $GIT_MESSAGE >> release-note-1.text
           if [ -z "${GIT_MESSAGE}" ]
           then
             RELEASE_NOTE_TEMP=$(git log -1 --format=%s)
           fi
-          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> release-note-1.text
-          RELEASE_NOTE=$(echo $GIT_MESSAGE) >> release-note-2.text
+          echo $RELEASE_NOTE_TEMP >> release-note-2.text
+          GIT_MESSAGE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g')
+          echo $GIT_MESSAGE >> release-note-3.text
 
       - name: Upload Release note
         uses: actions/upload-artifact@v4
