@@ -57,14 +57,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Create GitHub Tag
+      - name: Create GitHub Release
         uses: ./.github/actions/github-release
         with:
           # required
           app-name: 'DazzleMe'
-          create-tag: 'true'
-          create-release: 'false'
-          version-name: "1.0.0"
+          create-tag: 'false'
+          create-release: 'true'
+          version-name: "1.0.1"
 
 #  notify-release:
 #    runs-on: ubuntu-latest
