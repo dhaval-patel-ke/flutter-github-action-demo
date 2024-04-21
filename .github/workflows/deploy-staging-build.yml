@@ -33,6 +33,14 @@ jobs:
       - name: Rename APK File
         run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
 
+      - name: Upload app-build to firebase distribution
+        uses: ./.github/actions/firebase-distribution
+        with:
+          app-build-file-path: ${{ env.APK_NAME }}
+          download-build: 'false'
+          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
+
       - name: Upload Android Release
         uses: actions/upload-artifact@v4
         with:
@@ -49,21 +57,21 @@ jobs:
           echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
           cd ..
 
-  create-tag:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [ build-android ]
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+#  create-tag:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    needs: [ build-android ]
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
 
-      - name: Upload app-build to firebase distribution
-        uses: ./.github/actions/firebase-distribution
-        with:
-          app-build-file-path: ${{ env.APK_NAME }}
-          download-build: 'true'
-          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
+#      - name: Upload app-build to firebase distribution
+#        uses: ./.github/actions/firebase-distribution
+#        with:
+#          app-build-file-path: ${{ env.APK_NAME }}
+#          download-build: 'true'
+#          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+#          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
 
 #      - name: Create GitHub Release
 #        uses: ./.github/actions/github-release
