@@ -39,8 +39,8 @@ android {
     flavorDimensions += "env"
     productFlavors {
         staging {
-            versionCode 3
-            versionName "1.2.0-rc1"
+            versionCode 4
+            versionName "1.3.0"
         }
 
         production {
