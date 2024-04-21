@@ -44,10 +44,11 @@ runs:
       shell: bash
       run: |
         {
-            echo 'RELEASE_NOTE<<EOF'
-            git log -1 --format=%B
-            echo EOF
-        } >> "$GITHUB_ENV"
+          echo 'RELEASE_NOTE_TEMP<<EOF'
+          git log -1 --format=%B
+          echo EOF
+        }
+        RELEASE_NOTE=$(echo "$RELEASE_NOTE_TEMP" | sed 's/\\n/<br>/g') >> "$GITHUB_ENV"
 
     - name: Create Release
       uses: actions/github-script@v7
