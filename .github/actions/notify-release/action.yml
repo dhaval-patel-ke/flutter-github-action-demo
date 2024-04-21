@@ -64,7 +64,7 @@ runs:
         GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
       run: |
         message="$(cat release-note.txt)"
-        curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.content.outputs.contents }}" }'
+        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.content.outputs.contents }}" }'
 
     - name: Upload release note
       uses: actions/upload-artifact@v4
