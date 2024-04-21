@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace "com.dhaval2404.android"
+    namespace "com.github.dhaval2404.firebasedemo"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
