@@ -1,0 +1,73 @@
+name: Notify Release
+description: 'Notify on google chat'
+
+inputs:
+  app-name:
+    description: 'Application Name'
+    required: true
+    default: 'DazzleMe App'
+
+  app-build-link:
+    description: 'AppBuild download link'
+    required: true
+    default: ''
+
+  google-chat-webhook:
+    description: 'Google chat webhook'
+    required: true
+
+  version-name:
+    description: 'Application version name'
+    required: true
+    default: '1.0'
+
+  release-note-file:
+    description: 'Name of the release note'
+    required: false
+    default: 'release-note.txt'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Retrieve release note
+      id: release-note
+      shell: bash
+      run: |
+        {
+            echo 'RELEASE_NOTE<<EOF'
+            git log -1 --format=%B
+            echo EOF
+        } >> "$GITHUB_ENV"
+
+    - name: Generate message
+      shell: bash
+      env:
+        APP_NAME: ${{ inputs.app-name }}
+        VERSION_NAME: ${{ inputs.version-name }}
+        APP_BUILD_LINK: ${{ inputs.app-build-link }}
+        RELEASE_NOTE_FILE: ${{ inputs.release-note-file }}
+      run: |
+        echo "*${{ env.APP_NAME }} 🚀🚀🚀*" >> ${{ env.RELEASE_NOTE_FILE }}
+        echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_FILE }}
+        echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> ${{ env.RELEASE_NOTE_FILE }}
+        echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> ${{ env.RELEASE_NOTE_FILE }}
+
+    - name: Read file content
+      id: content
+      uses: guibranco/github-file-reader-action-v2@latest
+      with:
+        path: ${{ env.RELEASE_NOTE_FILE }}
+
+    - name: Notify release on google chat
+      shell: bash
+      env:
+        GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
+      run: |
+        message="$(cat release-note.txt)"
+        curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.content.outputs.contents }}" }'
+
+    - name: Upload release note
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.RELEASE_NOTE_FILE }}
+        path: ${{ env.RELEASE_NOTE_FILE }}
