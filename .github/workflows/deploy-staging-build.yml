@@ -63,7 +63,7 @@ jobs:
           app-build-file-path: ${{ env.APK_NAME }}
           download-build: 'true'
           firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-          firebase-credentials: ${{ env.FIREBASE_CREDENTIALS }}
+          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
 
 #      - name: Create GitHub Release
 #        uses: ./.github/actions/github-release
