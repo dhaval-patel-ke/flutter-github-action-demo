@@ -109,7 +109,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - id: Notify release on google chat
+      - name: Notify release on google chat
         uses: ./.github/actions/notify-release
         with:
           # required
