@@ -15,96 +15,44 @@ env:
   RELEASE_NOTE_NAME: "release-note.txt"
 
 jobs:
-  build-android:
-    runs-on: macos-latest
-    timeout-minutes: 30
-    outputs:
-      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Setup Environment
-        uses: ./.github/actions/setup-environment
-
-      - name: Build Staging APK
-        run: flutter build apk --debug --flavor staging
-
-      - name: Retrieve version name
-        id: android-version
-        shell: bash
-        run: |
-          cd android
-          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
-          cd ..
-
-      - name: Rename APK File
-        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
-
-      - name: Upload Android Release
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.APK_NAME }}
-          path: ${{ env.APK_NAME }}
-          if-no-files-found: error
-          compression-level: 0 # no compression
+#  build-android:
+#    runs-on: macos-latest
+#    timeout-minutes: 30
+#    outputs:
+#      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Environment
+#        uses: ./.github/actions/setup-environment
+#
+#      - name: Build Staging APK
+#        run: flutter build apk --debug --flavor staging
+#
+#      - name: Retrieve version name
+#        id: android-version
+#        shell: bash
+#        run: |
+#          cd android
+#          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
+#          cd ..
+#
+#      - name: Rename APK File
+#        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
+#
+#      - name: Upload Android Release
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: ${{ env.APK_NAME }}
+#          path: ${{ env.APK_NAME }}
+#          if-no-files-found: error
+#          compression-level: 0 # no compression
 
   create-tag:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [ build-android ]
-    outputs:
-      release-note: ${{ steps.release-note.outputs.GIT_COMMIT_MESSAGE }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Create tag
-        uses: actions/github-script@v7
-        id: create-tag
-        env:
-          VERSION_NAME: ${{ needs.build-android.outputs.android-version }}
-        with:
-          script: |
-            const result = await github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/v${{env.VERSION_NAME}}',
-              sha: context.sha
-            })
-            console.log(result)
-
-#      - name: Retrieve release note
-#        id: release-note
-#        shell: bash
-#        run: |
-#          {
-#              echo 'GIT_COMMIT_MESSAGE<<EOF'
-#              git log -1 --format=%B
-#              echo EOF
-#          } >> "$GITHUB_OUTPUT"
-
-  #      - name: Create Release
-  #        uses: actions/github-script@v7
-  #        id: create-release
-  #        with:
-  #          script: |
-  #            github.rest.repos.createRelease({
-  #              owner: context.repo.owner,
-  #              repo: context.repo.repo,
-  #              name: 'DazzleMe v${{env.VERSION_NAME}}',
-  #              body: '${{env.RELEASE_BODY}}',
-  #              tag_name: 'v${{env.VERSION_NAME}}',
-  #              target_commitish: '${{ github.ref_name }}',
-  #              draft: false,
-  #              prerelease: false,
-  #            })
-  #
-
-  notify-release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [ build-android, create-tag ]
+#    needs: [ build-android ]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -113,7 +61,24 @@ jobs:
         uses: ./.github/actions/notify-release
         with:
           # required
-          app-name: ${{ env.ANDROID_APP_NAME }}
-          app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
-          google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          version-name: ${{ needs.build-android.outputs.android-version }}
+          app-name: 'DazzleMe'
+          create-tag: 'true'
+          create-release: 'false'
+          version-name: "1.0.0"
+
+#  notify-release:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    needs: [ build-android, create-tag ]
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Notify release on google chat
+#        uses: ./.github/actions/notify-release
+#        with:
+#          # required
+#          app-name: ${{ env.ANDROID_APP_NAME }}
+#          app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
+#          google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+#          version-name: ${{ needs.build-android.outputs.android-version }}

@@ -5,7 +5,7 @@ inputs:
   app-name:
     description: 'Application Name'
     required: true
-    default: 'DazzleMe App'
+    default: 'KernelApp'
 
   app-build-link:
     description: 'AppBuild download link'
