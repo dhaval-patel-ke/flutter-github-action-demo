@@ -66,21 +66,6 @@ runs:
         fi
         echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> ${{ env.RELEASE_NOTE_FILE }}
 
-    - name: Read file content
-      id: content
-      uses: guibranco/github-file-reader-action-v2@latest
-      env:
-        RELEASE_NOTE_FILE: ${{ inputs.release-note-file }}
-      with:
-        path: ${{ env.RELEASE_NOTE_FILE }}
-
-    - name: Notify release on google chat
-      shell: bash
-      env:
-        GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
-      run: |
-        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.content.outputs.contents }}" }'
-
     - name: Upload release note
       uses: actions/upload-artifact@v4
       env:
@@ -88,3 +73,24 @@ runs:
       with:
         name: ${{ env.RELEASE_NOTE_FILE }}
         path: ${{ env.RELEASE_NOTE_FILE }}
+
+    - name: Read file content
+      id: read-content
+      uses: actions/github-script@v5
+      env:
+        RELEASE_NOTE_FILE: ${{ inputs.release-note-file }}
+      with:
+        result-encoding: string
+        script: |
+          const fs = require('fs');
+          const filePath = ${{ env.RELEASE_NOTE_FILE }};
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          console.log(fileContent);
+          return fileContent
+
+    - name: Notify release on google chat
+      shell: bash
+      env:
+        GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
+      run: |
+        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.read-content.outputs.result }}" }'

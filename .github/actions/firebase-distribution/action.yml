@@ -10,7 +10,6 @@ inputs:
   app-build-file-path:
     description: 'App build file path. This will be used when download-build is set to true'
     required: false
-    default: ''
 
   firebase-app-id:
     description: 'Firebase application id'
