@@ -15,64 +15,62 @@ env:
   RELEASE_NOTE_NAME: "release-note.txt"
 
 jobs:
-  build-android:
+#  build-android:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    outputs:
+#      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Environment
+#        uses: ./.github/actions/setup-environment
+#
+#      - name: Build Staging APK
+#        run: flutter build apk --release --flavor staging
+#
+#      - name: Rename APK File
+#        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
+#
+#      - name: Upload app-build to firebase distribution
+#        uses: ./.github/actions/firebase-distribution
+#        with:
+#          app-build-file-path: ${{ env.APK_NAME }}
+#          download-build: 'false'
+#          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+#          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
+#
+#      - name: Upload Android Release
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: ${{ env.APK_NAME }}
+#          path: ${{ env.APK_NAME }}
+#          if-no-files-found: error
+#          compression-level: 0 # no compression
+#
+#      - name: Retrieve version name
+#        id: android-version
+#        run: |
+#          cd android
+#          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
+
+  create-tag:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    outputs:
-      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
+#    needs: [ build-android ]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup Environment
-        uses: ./.github/actions/setup-environment
-
-      - name: Build Staging APK
-        run: flutter build apk --debug --flavor staging
-
-      - name: Rename APK File
-        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
-
-      - name: Upload app-build to firebase distribution
-        uses: ./.github/actions/firebase-distribution
-        with:
-          app-build-file-path: ${{ env.APK_NAME }}
-          download-build: 'false'
-          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
-
-      - name: Upload Android Release
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.APK_NAME }}
-          path: ${{ env.APK_NAME }}
-          if-no-files-found: error
-          compression-level: 0 # no compression
-
-      - name: Retrieve version name
-        id: android-version
-        shell: bash
-        run: |
-          cd android
-          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
-          cd ..
-
-#  create-tag:
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 30
-#    needs: [ build-android ]
-#    steps:
-#      - name: Checkout Repo
-#        uses: actions/checkout@v4
-
-#      - name: Upload app-build to firebase distribution
+#      - name: Upload APK artifact to Firebase App Distribution
 #        uses: ./.github/actions/firebase-distribution
 #        with:
 #          app-build-file-path: ${{ env.APK_NAME }}
 #          download-build: 'true'
 #          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
 #          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
-
+#
 #      - name: Create GitHub Release
 #        uses: ./.github/actions/github-release
 #        with:
@@ -88,4 +86,13 @@ jobs:
 #          app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
 #          google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
 #          version-name: ${{ needs.build-android.outputs.android-version }}
+
+      - name: Notify release on google chat
+        uses: ./.github/actions/notify-google-chat
+        with:
+          skip-tag: 'true'
+          app-name: ${{ env.ANDROID_APP_NAME }}
+          app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
+          google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+          version-name: '1.0.0'
 
