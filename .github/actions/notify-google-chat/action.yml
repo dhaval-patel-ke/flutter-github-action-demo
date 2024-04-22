@@ -85,14 +85,12 @@ runs:
           const fs = require('fs');
           const filePath = '${{ env.RELEASE_NOTE_FILE }}';
           const fileContent = fs.readFileSync(filePath, 'utf8');
-          console.log(fileContent);
-          var obj = new Object();
-          obj.text = fileContent;
-          return JSON.stringify(obj);
+          const content = fileContent.replace(/'/g, "\'");
+          return content;
 
     - name: Notify release on google chat
       shell: bash
       env:
         GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
       run: |
-        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data ${{ steps.read-content.outputs.result }}
+        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.read-content.outputs.result }}" }'
