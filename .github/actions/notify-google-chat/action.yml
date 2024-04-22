@@ -93,4 +93,4 @@ runs:
       env:
         GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
       run: |
-        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.read-content.outputs.result }}" }'
+        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": $(echo "${{ steps.read-content.outputs.result }}" ) }'
