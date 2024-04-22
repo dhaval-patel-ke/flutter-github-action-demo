@@ -59,7 +59,7 @@ runs:
         SKIP_TAG: ${{ inputs.skip-tag }}
       run: |
         echo "*${{ env.APP_NAME }} 🚀🚀🚀*" >> ${{ env.RELEASE_NOTE_FILE }}
-        echo "*v${{ env.VERSION_NAME }}* for $${{ env.APP_PLATFORM }} is ready to test. *<${{ env.APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_FILE }}
+        echo "*v${{ env.VERSION_NAME }}* for ${{ env.APP_PLATFORM }} is ready to test. *<${{ env.APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_FILE }}
         if ${{ env.SKIP_TAG == false || env.SKIP_TAG == 'false' }}; then
           echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> ${{ env.RELEASE_NOTE_FILE }}
         fi
