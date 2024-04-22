@@ -85,7 +85,7 @@ runs:
           const fs = require('fs');
           const filePath = '${{ env.RELEASE_NOTE_FILE }}';
           const fileContent = fs.readFileSync(filePath, 'utf8');
-          const content = fileContent.replace("\'", "\\\'");
+          const content = fileContent.replace("'", "\\'");
           return content;
 
     - name: Notify release on google chat
