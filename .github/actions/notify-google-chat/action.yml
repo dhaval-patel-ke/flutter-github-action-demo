@@ -76,7 +76,7 @@ runs:
 
     - name: Read file content
       id: read-content
-      uses: actions/github-script@v5
+      uses: actions/github-script@v7
       env:
         RELEASE_NOTE_FILE: ${{ inputs.release-note-file }}
       with:
