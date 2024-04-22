@@ -55,7 +55,7 @@ runs:
       run: |
         echo "*${{ env.APP_NAME }} 🚀🚀🚀*" >> ${{ env.RELEASE_NOTE_FILE }}
         echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_FILE }}
-        if [ 15 -gt 10 ]
+        if [  ${{ env.SKIP_TAG == false || env.SKIP_TAG == 'false' }} ]
         then
           echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> ${{ env.RELEASE_NOTE_FILE }}
         fi
