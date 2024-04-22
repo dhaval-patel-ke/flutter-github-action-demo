@@ -26,10 +26,10 @@ inputs:
     required: true
     default: '1.0'
 
-  show-tag:
-    description: 'Show GitHub Tag'
+  skip-tag:
+    description: 'Skip GitHub tag from release note'
     required: false
-    default: 'true'
+    default: 'false'
 
   release-note-file:
     description: 'Name of the release note'
@@ -57,11 +57,11 @@ runs:
         VERSION_NAME: ${{ inputs.version-name }}
         APP_BUILD_LINK: ${{ inputs.app-build-link }}
         RELEASE_NOTE_FILE: ${{ inputs.release-note-file }}
-        SHOW_TAG: ${{ inputs.show-tag }}
+        SKIP_TAG: ${{ inputs.skip-tag }}
       run: |
         echo "*${{ env.APP_NAME }} 🚀🚀🚀*" >> ${{ env.RELEASE_NOTE_FILE }}
         echo "*v${{ env.VERSION_NAME }}* for $${{ env.APP_PLATFORM }} is ready to test. *<${{ env.APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_FILE }}
-        if [ ${{ env.SHOW_TAG == true || env.SHOW_TAG == 'true' }} ]; then
+        if ${{ env.SKIP_TAG == false || env.SKIP_TAG == 'false' }}; then
           echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> ${{ env.RELEASE_NOTE_FILE }}
         fi
         echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> ${{ env.RELEASE_NOTE_FILE }}
