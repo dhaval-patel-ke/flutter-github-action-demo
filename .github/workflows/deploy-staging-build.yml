@@ -90,7 +90,8 @@ jobs:
       - name: Notify release on google chat
         uses: ./.github/actions/notify-google-chat
         with:
-          show-tag: 'true'
+          show-tag: 'false'
+          app-platform: 'Android'
           app-name: ${{ env.ANDROID_APP_NAME }}
           app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
           google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}

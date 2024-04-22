@@ -12,6 +12,11 @@ inputs:
     required: true
     default: ''
 
+  app-platform:
+    description: 'App platform. i.e. android, ios'
+    required: true
+    default: ''
+
   google-chat-webhook:
     description: 'Google chat webhook'
     required: true
@@ -23,7 +28,7 @@ inputs:
 
   show-tag:
     description: 'Show GitHub Tag'
-    required: true
+    required: false
     default: 'true'
 
   release-note-file:
@@ -48,14 +53,15 @@ runs:
       shell: bash
       env:
         APP_NAME: ${{ inputs.app-name }}
+        APP_PLATFORM: ${{ inputs.app-platform }}
         VERSION_NAME: ${{ inputs.version-name }}
         APP_BUILD_LINK: ${{ inputs.app-build-link }}
         RELEASE_NOTE_FILE: ${{ inputs.release-note-file }}
         SHOW_TAG: ${{ inputs.show-tag }}
       run: |
         echo "*${{ env.APP_NAME }} 🚀🚀🚀*" >> ${{ env.RELEASE_NOTE_FILE }}
-        echo "*v${{ env.VERSION_NAME }}* for Android is ready to test. *<${{ env.APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_FILE }}
-        if [  ${{ env.SHOW_TAG == true || env.SHOW_TAG == 'true' }} ]; then
+        echo "*v${{ env.VERSION_NAME }}* for $${{ env.APP_PLATFORM }} is ready to test. *<${{ env.APP_BUILD_LINK }}|Click Here>* to download!\n" >> ${{ env.RELEASE_NOTE_FILE }}
+        if [ ${{ env.SHOW_TAG == true || env.SHOW_TAG == 'true' }} ]; then
           echo "*GitHub Tag:*\n${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}\n" >> ${{ env.RELEASE_NOTE_FILE }}
         fi
         echo "*Release Note:*\n${{ env.RELEASE_NOTE }}" >> ${{ env.RELEASE_NOTE_FILE }}
