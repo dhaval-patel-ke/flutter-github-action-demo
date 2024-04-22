@@ -15,7 +15,6 @@ inputs:
   app-platform:
     description: 'App platform. i.e. android, ios'
     required: true
-    default: ''
 
   google-chat-webhook:
     description: 'Google chat webhook'
