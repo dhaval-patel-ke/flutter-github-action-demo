@@ -71,14 +71,14 @@ jobs:
 #          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
 #          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
 #
-#      - name: Create GitHub Release
-#        uses: ./.github/actions/github-release
-#        with:
-#          app-name: 'DazzleMe'
-#          create-tag: 'false'
-#          create-release: 'false'
-#          version-name: ${{ needs.deploy-android.outputs.android-version }}
-#
+      - name: Create GitHub Release
+        uses: ./.github/actions/github-release
+        with:
+          app-name: 'DazzleMe'
+          create-tag: 'false'
+          create-release: 'true'
+          version-name: '1.4.0-rc1'
+
 #      - name: Notify release on google chat
 #        uses: ./.github/actions/notify-google-chat
 #        with:
@@ -97,5 +97,5 @@ jobs:
           app-name: ${{ env.ANDROID_APP_NAME }}
           app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
           google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          version-name: '1.0.0'
+          version-name: '1.4.0'
 
