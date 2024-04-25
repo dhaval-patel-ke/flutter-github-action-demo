@@ -9,6 +9,8 @@ permissions:
   contents: write
 
 env:
+  APK_NAME: "DazzleMe-Staging.apk"
+  IPA_NAME: "DazzleMe-Staging.ipa"
   APP_NAME: "DazzleMe App - Staging"
   FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps/"
 
@@ -29,7 +31,7 @@ jobs:
         run: flutter build apk --release --flavor staging
 
       - name: Rename APK File
-        run: mv build/app/outputs/flutter-apk/*.apk '${{ env.APP_NAME }}.apk'
+        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
 
       - name: Upload app-build to firebase distribution
         uses: ./.github/actions/firebase-distribution
