@@ -9,68 +9,66 @@ permissions:
   contents: write
 
 env:
-  APK_NAME: "Firebase-Demo.apk"
-  ANDROID_APP_NAME: "DazzleMe App - Staging"
-  ANDROID_APP_BUILD_LINK: "https://appdistribution.firebase.google.com/testerapps/1:470852662413:android:51620a648793ffb67e9ec4"
-  RELEASE_NOTE_NAME: "release-note.txt"
+  APP_NAME: "DazzleMe App - Staging"
+  FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps/"
 
 jobs:
-#  deploy-android:
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 30
-#    outputs:
-#      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
-#    steps:
-#      - name: Checkout Repo
-#        uses: actions/checkout@v4
-#
-#      - name: Setup Environment
-#        uses: ./.github/actions/setup-environment
-#
-#      - name: Build Staging APK
-#        run: flutter build apk --release --flavor staging
-#
-#      - name: Rename APK File
-#        run: mv build/app/outputs/flutter-apk/*.apk ${{ env.APK_NAME }}
-#
-#      - name: Upload app-build to firebase distribution
-#        uses: ./.github/actions/firebase-distribution
-#        with:
-#          app-build-file-path: ${{ env.APK_NAME }}
-#          download-build: 'false'
-#          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-#          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
-#
-#      - name: Upload Android Release
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: ${{ env.APK_NAME }}
-#          path: ${{ env.APK_NAME }}
-#          if-no-files-found: error
-#          compression-level: 0 # no compression
-#
-#      - name: Retrieve version name
-#        id: android-version
-#        run: |
-#          cd android
-#          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
-
-  create-tag:
+  deploy-android:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-#    needs: [ deploy-android ]
+    outputs:
+      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-#      - name: Upload APK artifact to Firebase App Distribution
-#        uses: ./.github/actions/firebase-distribution
-#        with:
-#          app-build-file-path: ${{ env.APK_NAME }}
-#          download-build: 'true'
-#          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
-#          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
-#
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Build Staging APK
+        run: flutter build apk --release --flavor staging
+
+      - name: Rename APK File
+        run: mv build/app/outputs/flutter-apk/*.apk '${{ env.APP_NAME }}.apk'
+
+      - name: Upload app-build to firebase distribution
+        uses: ./.github/actions/firebase-distribution
+        with:
+          app-build-file-path: ${{ env.APK_NAME }}
+          download-build: 'false'
+          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
+
+      - name: Upload Android Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APK_NAME }}
+          path: ${{ env.APK_NAME }}
+          if-no-files-found: error
+          compression-level: 0 # no compression
+
+      - name: Retrieve version name
+        id: android-version
+        run: |
+          cd android
+          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_OUTPUT
+
+  create-tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [ deploy-android ]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Upload APK artifact to Firebase App Distribution
+        uses: ./.github/actions/firebase-distribution
+        with:
+          app-build-file-path: ${{ env.APK_NAME }}
+          download-build: 'true'
+          firebase-app-id: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+          firebase-credentials: ${{ secrets.FIREBASE_CREDENTIALS }}
+
       - name: Create GitHub Release
         uses: ./.github/actions/github-release
         with:
@@ -79,23 +77,23 @@ jobs:
           create-release: 'true'
           version-name: '1.4.0-rc2'
 
-#      - name: Notify release on google chat
-#        uses: ./.github/actions/notify-google-chat
-#        with:
-#          show-tag: 'false'
-#          app-platform: 'Android'
-#          app-name: ${{ env.ANDROID_APP_NAME }}
-#          app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
-#          google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-#          version-name: ${{ needs.deploy-android.outputs.android-version }}
-
       - name: Notify release on google chat
         uses: ./.github/actions/notify-google-chat
         with:
           skip-tag: 'true'
           app-platform: 'Android'
-          app-name: ${{ env.ANDROID_APP_NAME }}
-          app-build-link: ${{ env.ANDROID_APP_BUILD_LINK }}
+          app-name: ${{ env.APP_NAME }}
+          app-build-link: '${{ env.FIREBASE_DISTRIBUTION_LINK }}/${{ vars.FIREBASE_ANDROID_APP_ID }}'
           google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          version-name: '1.4.0-rc2'
+          version-name: ${{ needs.deploy-android.outputs.android-version }}
+
+#      - name: Notify release on google chat
+#        uses: ./.github/actions/notify-google-chat
+#        with:
+#          skip-tag: 'true'
+#          app-platform: 'Android'
+#          app-name: ${{ env.APP_NAME }}
+#          app-build-link: '${{ env.FIREBASE_DISTRIBUTION_LINK }}/${{ vars.FIREBASE_ANDROID_APP_ID }}'
+#          google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+#          version-name: '1.4.0-rc2'
 
