@@ -69,4 +69,4 @@ jobs:
              }
            ]
           }'
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '$CHAT_MESSAGE'
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data "$CHAT_MESSAGE"
