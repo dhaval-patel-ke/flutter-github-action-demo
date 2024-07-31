@@ -24,57 +24,60 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Prepare message
-        shell: bash
+      - name: Define Long JSON Text and Assign to ENV
         run: |
+          LONG_TEXT=$(cat <<EOF
           {
-            echo 'CHAT_MESSAGE<<EOF'
-            {
-             "cardsV2": [
-               {
-                 "cardId": "createCardMessage",
-                 "card": {
-                   "header": {
-                     "title": "Wheelhouse App - Staging",
-                     "subtitle": "Staging API is working fine. Nothing to worry about. 🧘",
-                     "imageUrl": "https://wheelhouse.site/assets/front/images/logo.png"
-                   },
-                   "sections": [
-                     {
-                       "collapsible": false,
-                       "uncollapsibleWidgetsCount": 1,
-                       "widgets": [
-                         {
-                           "buttonList": {
-                             "buttons": [
-                               {
-                                 "text": "View Report",
-                                 "color": {
-                                   "red": 0.25,
-                                   "green": 0.42,
-                                   "blue": 0,
-                                   "alpha": 1
-                                 },
-                                 "onClick": {
-                                   "openLink": {
-                                     "url": "..."
-                                   }
-                                 }
-                               }
-                             ]
-                           }
-                         }
-                       ]
-                     }
-                   ]
-                 }
-               }
-             ]
-            }
-            echo EOF
-          } >> "$GITHUB_ENV"
+            "cardsV2": [
+              {
+                "cardId": "API Automation",
+                "card": {
+                  "header": {
+                    "title": "Wheelhouse App - Staging",
+                    "subtitle": "API Automation Workflow Report",
+                    "imageUrl": "https://wheelhouse.site/assets/front/images/logo.png"
+                  },
+                  "sections": [
+                    {
+                      "widgets": [
+                        {
+                          "textParagraph": {
+                            "text": "<font color=\"#C62828\"><b>API failure detected. Please check report for more details. 🚨🚨🚨</b></font>"
+                          }
+                        },
+                        {
+                          "buttonList": {
+                            "buttons": [
+                              {
+                                "text": "View Report",
+                                "color": {
+                                  "red": 0.25,
+                                  "green": 0.42,
+                                  "blue": 0,
+                                  "alpha": 1
+                                },
+                                "onClick": {
+                                  "openLink": {
+                                    "url": "https://developers.google.com/chat/ui/widgets/button-list"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+          EOF
+          )
+          echo "LONG_TEXT=$LONG_TEXT" >> $GITHUB_ENV
+
 
       - name: Notify release on google chat
         shell: bash
         run: |
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '${{ env.CHAT_MESSAGE }}'
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '${{ env.LONG_TEXT }}'
