@@ -1,8 +1,9 @@
 name: Deploy Staging Build
 
-on:
-  push:
-    branches: [ 'main' ]
+on: workflow_dispatch
+#  pull_request: [ open, sychronise ]
+#  push:
+#    branches: [ 'main' ]
 
 permissions:
   actions: write

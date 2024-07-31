@@ -1,0 +1,76 @@
+name: Deploy Staging Build
+
+on:
+  push:
+    branches: [ 'main' ]
+
+permissions:
+  actions: write
+  contents: write
+
+env:
+  APK_NAME: "DazzleMe-Staging.apk"
+  IPA_NAME: "DazzleMe-Staging.ipa"
+  APP_NAME: "DazzleMe App - Staging"
+  FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps/"
+
+jobs:
+  deploy-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      android-version: ${{ steps.android-version.outputs.VERSION_NAME }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Notify release on google chat
+        shell: bash
+        run: |
+          {
+              echo 'CHAT_MESSAGE<<EOF'
+              {
+                "cardsV2": [
+                  {
+                    "cardId": "createCardMessage",
+                    "card": {
+                      "header": {
+                        "title": "${{ env.APP_NAME }}",
+                        "subtitle": "Staging API is working fine. Nothing to worry about. 🧘",
+                        "imageUrl": "https://wheelhouse.site/assets/front/images/logo.png"
+                      },
+                      "sections": [
+                        {
+                          "collapsible": false,
+                          "uncollapsibleWidgetsCount": 1,
+                          "widgets": [
+                            {
+                              "buttonList": {
+                                "buttons": [
+                                  {
+                                    "text": "View Report",
+                                    "color": {
+                                      "red": 0.25,
+                                      "green": 0.42,
+                                      "blue": 0,
+                                      "alpha": 1
+                                    },
+                                    "onClick": {
+                                      "openLink": {
+                                        "url": ".."
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+              echo EOF
+          } >> "$GITHUB_ENV"
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '${{ env.CHAT_MESSAGE }}'
