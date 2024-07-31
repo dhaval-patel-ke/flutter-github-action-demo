@@ -72,4 +72,5 @@ jobs:
           }
           EOF
           )
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data $CHAT_MESSAGE
+          echo "CHAT_MESSAGE<<EOF" >> $GITHUB_ENV
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '${{ env.CHAT_MESSAGE }}'
