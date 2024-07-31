@@ -28,45 +28,45 @@ jobs:
         shell: bash
         run: |
           CHAT_MESSAGE='{
-           "cardsV2": [
-             {
-               "cardId": "createCardMessage",
-               "card": {
-                 "header": {
-                   "title": "Wheelhouse App - Staging",
-                   "subtitle": "Staging API is working fine. Nothing to worry about. 🧘",
-                   "imageUrl": "https://wheelhouse.site/assets/front/images/logo.png"
-                 },
-                 "sections": [
-                   {
-                     "collapsible": false,
-                     "uncollapsibleWidgetsCount": 1,
-                     "widgets": [
-                       {
-                         "buttonList": {
-                           "buttons": [
-                             {
-                               "text": "View Report",
-                               "color": {
-                                 "red": 0.25,
-                                 "green": 0.42,
-                                 "blue": 0,
-                                 "alpha": 1
-                               },
-                               "onClick": {
-                                 "openLink": {
-                                   "url": "${{ steps.artifact-upload-step.outputs.artifact-url }}"
+             "cardsV2": [
+               {
+                 "cardId": "createCardMessage",
+                 "card": {
+                   "header": {
+                     "title": "Wheelhouse App - Staging",
+                     "subtitle": "Staging API is working fine. Nothing to worry about. 🧘",
+                     "imageUrl": "https://wheelhouse.site/assets/front/images/logo.png"
+                   },
+                   "sections": [
+                     {
+                       "collapsible": false,
+                       "uncollapsibleWidgetsCount": 1,
+                       "widgets": [
+                         {
+                           "buttonList": {
+                             "buttons": [
+                               {
+                                 "text": "View Report",
+                                 "color": {
+                                   "red": 0.25,
+                                   "green": 0.42,
+                                   "blue": 0,
+                                   "alpha": 1
+                                 },
+                                 "onClick": {
+                                   "openLink": {
+                                     "url": "${{ steps.artifact-upload-step.outputs.artifact-url }}"
+                                   }
                                  }
                                }
-                             }
-                           ]
+                             ]
+                           }
                          }
-                       }
-                     ]
-                   }
-                 ]
+                       ]
+                     }
+                   ]
+                 }
                }
-             }
-           ]
-          }'
+             ]
+            }'
           curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data $CHAT_MESSAGE
