@@ -30,7 +30,7 @@ jobs:
           script: |
             const variables = '{"cardsV2":[{"cardId":"API Automation","card":{"header":{"title":"Wheelhouse App - Staging","subtitle":"API Automation Workflow Report","imageUrl":"https://wheelhouse.site/assets/front/images/logo.png"},"sections":[{"widgets":[{"textParagraph":{"text":"<font color=\"#C62828\"><b>API failure detected. Please check report for more details. 🚨🚨🚨</b></font>"}},{"buttonList":{"buttons":[{"text":"View Report","color":{"red":0.25,"green":0.42,"blue":0,"alpha":1},"onClick":{"openLink":{"url":"https://developers.google.com/chat/ui/widgets/button-list"}}}]}}]}]}}]}'
             
-            const { request } = require("@octokit/request");
+            import { Octokit } from "@octokit/rest";
             const response = await request('POST ${{ secrets.GOOGLE_CHAT_WEBHOOK }}', {
               headers: {
                 'content-type': 'application/json'
