@@ -12,6 +12,10 @@ env:
   APK_NAME: "DazzleMe-Staging.apk"
   IPA_NAME: "DazzleMe-Staging.ipa"
   APP_NAME: "DazzleMe App - Staging"
+  TASK_NAME: "API Automation Workflow Report"
+  SUCCESS_MESSAGE: "API is working fine. Nothing to worry about. 🧘"
+  FAILURE_MESSAGE: "API failure detected. Please check report for more details. 🚨🚨🚨"
+  LOGO_URL: "https://wheelhouse.site/assets/front/images/logo.png"
   FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps/"
 
 jobs:
@@ -24,27 +28,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
       - name: Define Long JSON Text and Assign to ENV
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const variables = '{"cardsV2":[{"cardId":"API Automation","card":{"header":{"title":"Wheelhouse App - Staging","subtitle":"API Automation Workflow Report","imageUrl":"https://wheelhouse.site/assets/front/images/logo.png"},"sections":[{"widgets":[{"textParagraph":{"text":"<font color=\"#C62828\"><b>API failure detected. Please check report for more details. 🚨🚨🚨</b></font>"}},{"buttonList":{"buttons":[{"text":"View Report","color":{"red":0.25,"green":0.42,"blue":0,"alpha":1},"onClick":{"openLink":{"url":"https://developers.google.com/chat/ui/widgets/button-list"}}}]}}]}]}}]}'
-            
-            import { Octokit } from "@octokit/rest";
-            const response = await request('POST ${{ secrets.GOOGLE_CHAT_WEBHOOK }}', {
-              headers: {
-                'content-type': 'application/json'
-              },
-              data: {
-                title: 'foo',
-                body: 'bar',
-                userId: 1
-              }
-            });
-
-            console.log(response.data);
-
-      - name: Notify release on google chat
         shell: bash
         run: |
-          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '${{ env.LONG_TEXT }}'
+          java -jar .github/tools/google-chat-manager-1.0.jar --url '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.APP_NAME }}' --subtitle '${{ env.TASK_NAME }}' --imageUrl '${{ env.LOGO_URL }}' --desc '${{ env.SUCCESS_MESSAGE }}' --action "View Report" --actionUrl '${{ env.FIREBASE_DISTRIBUTION_LINK }}/${{ vars.FIREBASE_ANDROID_APP_ID }}'
