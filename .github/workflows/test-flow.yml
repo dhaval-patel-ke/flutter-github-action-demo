@@ -12,10 +12,10 @@ env:
   APK_NAME: "DazzleMe-Staging.apk"
   IPA_NAME: "DazzleMe-Staging.ipa"
   APP_NAME: "DazzleMe App - Staging"
+  APP_LOGO: "https://wheelhouse.site/assets/front/images/logo.png"
   TASK_NAME: "API Automation Workflow Report"
-  SUCCESS_MESSAGE: "API is working fine. Nothing to worry about. 🧘"
-  FAILURE_MESSAGE: "API failure detected. Please check report for more details. 🚨🚨🚨"
-  LOGO_URL: "https://wheelhouse.site/assets/front/images/logo.png"
+  TASK_SUCCESS_MESSAGE: "API is working fine. Nothing to worry about. 🧘"
+  TASK_FAILURE_MESSAGE: "API failure detected. Please check report for more details. 🚨🚨🚨"
   FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps/"
 
 jobs:
@@ -32,6 +32,11 @@ jobs:
         uses: ./.github/actions/setup-environment
 
       - name: Define Long JSON Text and Assign to ENV
+        if: ${{ success() }}
         shell: bash
         run: |
-          java -jar .github/tools/google-chat-manager-1.0.jar --url '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.APP_NAME }}' --subtitle '${{ env.TASK_NAME }}' --imageUrl '${{ env.LOGO_URL }}' --desc '${{ env.SUCCESS_MESSAGE }}' --action "View Report" --actionUrl '${{ env.FIREBASE_DISTRIBUTION_LINK }}/${{ vars.FIREBASE_ANDROID_APP_ID }}'
+          if dart format lib | grep -q "0 changed"; then
+            exit 0
+          else
+            exit 1
+          fi
